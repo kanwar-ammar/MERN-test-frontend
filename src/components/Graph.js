@@ -1,42 +1,43 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { VictoryBar, VictoryChart } from "victory";
-import { VictoryPie } from "victory";
 import { Chart } from "react-google-charts";
 import axios from "axios";
 const host = "http://localhost:4000/api/";
 
 const Graph = () => {
-  let [students, setStudents] = useState();
+  let [students, setStudents] = useState("");
+  let [studentName, setStudentName] = useState("");
   let student = "";
-  // useEffect(() => {
-  // axios.get(`${host}student/topfive`).then(async function (res) {
-  //   student = await res.data.data;
-  //   setStudents(student);
-  //   console.log(students);
-  // });
-  // });
-  // let dataG = students.map(async (student) => {
-  //   console.log(student);
-  //   let data = [];
-  //   data.push(student.studentId, student.score);
-  // });
-  // for (student of students) {
-  //   data.push(student.studentId, student.score);
-  //   console.log(data);
-  //   data.push(dataG);
-  // }
-  // console.log("globalData", await dataG);
+  useEffect(() => {
+    console.log(`${host}student/topfive`);
+    axios.get(`${host}student/topfive`).then(async function (res) {
+      student = await res.data.data;
+      setStudents(student);
+    });
+  }, []);
+  console.log(students);
+  let allStudents = [["student", "Scores"]];
+  for (student of students) {
+    let data = [];
+    let studentId = student.studentId;
+    // axios
+    //   .get(`${host}student/getStudent/${studentId}`)
+    //   .then(async function (res) {
+    //     let StudentName = res.data.data;
+    //     console.log("curr student name", res.data.data);
+    //     setStudentName(StudentName);
+    //     data.push(studentName, student.score);
+    //   });
+    // console.log(studentName);
+    data.push(student.studentId, student.score);
+    allStudents.push(data);
+  }
+  console.log(allStudents);
   return (
+    // <p>Hello</p>
     <Fragment>
       <Chart
         chartType="ScatterChart"
-        data={[
-          ["student", "Scores"],
-          [1, 90],
-          [2, 80],
-          [3, 70],
-          [4, 60],
-        ]}
+        data={allStudents}
         width="100%"
         height="400px"
         legendToggle
